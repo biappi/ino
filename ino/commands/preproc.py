@@ -58,6 +58,8 @@ class Preprocess(Command):
 
     def extract_includes(self, src_lines):
         regex = re.compile("^\\s*#include\\s*[<\"](\\S+)[\">]")
+        preproc_re = re.compile("^\\s*#")
+
         includes = []
         sketch = []
         for line in src_lines:
@@ -70,6 +72,9 @@ class Preprocess(Command):
                 #  2) line numbers will be preserved
                 sketch.append('//' + line)
             else:
+                m = preproc_re.match(line)
+                if m:
+                    includes.append(line)
                 sketch.append(line)
 
         return includes, sketch
