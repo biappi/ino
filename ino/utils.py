@@ -40,11 +40,13 @@ class FileMap(OrderedDict):
 def list_subdirs(dirname, recursive=False, exclude=[]):
     entries = [e for e in os.listdir(dirname) if e not in exclude and not e.startswith('.')]
     paths = [os.path.join(dirname, e) for e in entries]
-    dirs = filter(os.path.isdir, paths)
+    dirs = [p for p in paths if os.path.isdir(p)]
+
     if recursive:
-        sub = itertools.chain.from_iterable(
-            list_subdirs(d, recursive=True, exclude=exclude) for d in dirs)
-        dirs.extend(sub)
+        sub = [ list_subdirs(d, recursive=True, exclude=exclude) for d in dirs ]
+        for i in sub:
+            dirs.extend(i)
+
     return dirs
 
 
